@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: React CI/CD Pipeline
 
 on:
   push:
@@ -6,26 +6,62 @@ on:
       - main
       - develop
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
   ci:
+    name: Build, Test & Lint
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
-      - run: npm ci
+      - name: Install Dependencies
+        run: npm ci
         env:
           CI: true
 
-      - run: npx prettier --check .
+      - name: Check Code Formatting (Prettier)
+        run: npx prettier --check .
 
-      - run: npm run lint
+      - name: Lint Source Code (ESLint)
+        run: npm run lint
 
-      - run: npm run test:coverage
+      - name: Run Unit Tests
+        run: npm run test:coverage
 
-      - run: npm run build
+      - name: Build React Application
+        run: npm run build
+
+      - name: Upload Build Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+      - name: CI Pipeline Completed
+        run: echo "Build, lint, tests, and formatting completed successfully."
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.ref == 'refs/heads/main'
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
