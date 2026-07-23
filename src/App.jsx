@@ -27,7 +27,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Users List</h1>
+      <h1>Users</h1>
       <ul className="list">
         {users.map((user) => (
           <li key={user.id} className="item">
