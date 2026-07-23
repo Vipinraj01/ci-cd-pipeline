@@ -5,7 +5,7 @@
 
 ---
 
-## Slide 1 — The Big Picture
+## Slide 1 — The Big Pictures
 
 > _"Every time we push code to `main` or `develop`, this pipeline fires up automatically. It runs a gauntlet of checks — formatting, linting, testing, building — and if we're on `main`, it even deploys the result to GitHub Pages. No manual steps, no forgotten checks. Code goes from commit to production in one automated flow."_
 
